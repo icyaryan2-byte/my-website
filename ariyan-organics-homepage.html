@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#120C08">
+<meta name="description" content="Ariyan Organics — premium, single-origin organic jaggery, hand-set in small batches from the cane fields of Charsadda.">
+<title>Ariyan Organics — Heritage, Turned to Gold</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+  /* ============ Tokens ============ */
+  :root{
+    --obsidian:#120C08;
+    --obsidian-2:#1B120B;
+    --molasses:#4A2311;
+    --amber:#D48B38;
+    --champagne:#E9C98A;
+    --cream:#FAF6EE;
+    --cream-dim:rgba(250,246,238,.62);
+    --cream-faint:rgba(250,246,238,.4);
+    --font-display:'Playfair Display', Georgia, serif;
+    --font-body:'Inter', -apple-system, sans-serif;
+  }
+
+  /* ============ Reset & Base ============ */
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{background:var(--obsidian); scroll-behavior:smooth; scrollbar-width:thin; scrollbar-color:var(--amber) var(--obsidian);}
+  body{
+    background:var(--obsidian);
+    color:var(--cream);
+    font-family:var(--font-body);
+    font-weight:300;
+    overflow-x:hidden;
+  }
+  body.has-custom-cursor, body.has-custom-cursor a, body.has-custom-cursor button{ cursor:none; }
+  a{color:inherit; text-decoration:none;}
+  h1,h2,h3{font-weight:500;}
+  ::selection{background:var(--amber); color:var(--obsidian);}
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--champagne); outline-offset:4px; border-radius:4px; }
+
+  /* ============ Custom Scrollbar ============ */
+  ::-webkit-scrollbar{width:11px;}
+  ::-webkit-scrollbar-track{background:var(--obsidian);}
+  ::-webkit-scrollbar-thumb{
+    background:linear-gradient(180deg,var(--champagne),var(--amber));
+    border-radius:8px;
+    border:3px solid var(--obsidian);
+    background-clip:padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover{background:var(--champagne); box-shadow:0 0 10px var(--amber);}
+
+  /* ============ Scroll Progress Rail ============ */
+  .scroll-rail{ position:fixed; top:0; right:14px; width:2px; height:100vh; background:rgba(250,246,238,.08); z-index:60; }
+  .scroll-rail-fill{ width:100%; height:0%; background:linear-gradient(180deg,var(--champagne),var(--amber)); box-shadow:0 0 8px var(--amber); }
+  @media (max-width:900px){ .scroll-rail{display:none;} }
+
+  /* ============ Cursor ============ */
+  .cursor-dot,.cursor-ring{ position:fixed; top:0; left:0; pointer-events:none; z-index:100; border-radius:50%; transform:translate(-50%,-50%); will-change:transform; }
+  .cursor-dot{ width:6px; height:6px; background:var(--champagne); }
+  .cursor-ring{ width:34px; height:34px; border:1px solid rgba(212,139,56,.6); }
+
+  /* ============ Ambient FX ============ */
+  #particles{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .grain{
+    position:fixed; inset:0; z-index:90; pointer-events:none; opacity:.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ============ Navigation ============ */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:2rem clamp(1.5rem,5vw,4rem);
+    transition:background .4s ease, backdrop-filter .4s ease, padding .4s ease, border-color .4s ease;
+    border-bottom:1px solid transparent;
+  }
+  .nav.is-scrolled{ background:rgba(18,12,8,.72); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); padding:1.1rem clamp(1.5rem,5vw,4rem); border-color:rgba(233,201,138,.08); }
+  .nav-mark{ font-family:var(--font-display); font-size:1.15rem; font-variant:small-caps; letter-spacing:.06em; color:var(--cream); }
+  .nav-links{ display:flex; gap:2.2rem; font-size:.92rem; color:var(--cream-dim); }
+  .nav-links a{ transition:color .3s ease; }
+  .nav-links a:hover{ color:var(--champagne); }
+  .nav-social{ display:flex; gap:1.2rem; }
+  .social-icon{ width:18px; height:18px; color:var(--cream-dim); transition:color .3s ease; }
+  .social-icon:hover{ color:var(--champagne); }
+  .social-icon svg{ width:100%; height:100%; fill:none; }
+  @media (max-width:900px){ .nav-links{display:none;} }
+
+  /* ============ Hero ============ */
+  .hero{
+    position:relative; z-index:1; min-height:100vh; min-height:100svh;
+    display:grid; grid-template-columns:1.1fr .9fr; align-items:center;
+    padding:7rem clamp(1.5rem,5vw,4rem) 3rem; gap:2rem;
+  }
+  .hero-kicker{ font-family:var(--font-display); font-style:italic; font-weight:400; font-size:1rem; color:var(--champagne); margin-bottom:1.6rem; }
+  .hero-headline{ font-family:var(--font-display); font-size:clamp(3rem,7vw,6.4rem); line-height:1.02; color:var(--cream); }
+  .hero-headline .line{ display:block; overflow:hidden; }
+  .hero-headline .line-inner{ display:block; will-change:transform; }
+  .hero-sub{ font-size:1.08rem; line-height:1.7; color:var(--cream-dim); max-width:44ch; margin:2rem 0 2.6rem; font-weight:300; }
+  .hero-visual{ position:relative; height:60vh; perspective:1000px; }
+  .jaggery-block{
+    position:absolute; right:-6%; top:50%; transform:translateY(-50%);
+    width:min(30vw,420px); height:min(30vw,420px); transform-style:preserve-3d; will-change:transform;
+  }
+  .block-face{
+    position:absolute; inset:0; border-radius:20px;
+    background:radial-gradient(circle at 28% 22%, var(--champagne), transparent 55%), linear-gradient(150deg, var(--amber) 0%, var(--molasses) 78%);
+    box-shadow:0 45px 90px -25px rgba(0,0,0,.65), inset 0 2px 0 rgba(255,255,255,.15);
+  }
+  .block-shine{
+    position:absolute; inset:0; border-radius:20px; mix-blend-mode:overlay;
+    background:radial-gradient(circle at var(--mx,30%) var(--my,20%), rgba(255,255,255,.3), transparent 42%);
+  }
+  .scroll-cue{ position:absolute; bottom:2.6rem; left:clamp(1.5rem,5vw,4rem); }
+  .scroll-cue span{ display:block; width:1px; height:52px; background:linear-gradient(var(--amber), transparent); position:relative; }
+  .scroll-cue span::after{ content:''; position:absolute; top:0; left:-1.5px; width:4px; height:4px; border-radius:50%; background:var(--champagne); animation:scrollcue 2.2s ease-in-out infinite; }
+  @keyframes scrollcue{ 0%{top:0;opacity:1;} 90%{opacity:0;} 100%{top:100%;opacity:0;} }
+
+  /* ============ Magnetic Buttons ============ */
+  .btn-magnetic{
+    position:relative; display:inline-flex; align-items:center; justify-content:center;
+    padding:1.15rem 2.6rem; border-radius:999px; background:transparent; border:1px solid var(--amber);
+    font-family:var(--font-body); font-size:.95rem; letter-spacing:.02em; color:var(--cream);
+    overflow:hidden; isolation:isolate; transition:border-color .4s ease, box-shadow .4s ease; will-change:transform;
+  }
+  .btn-magnetic:hover{ border-color:var(--champagne); box-shadow:0 0 24px rgba(212,139,56,.35); }
+  .btn-magnetic .btn-label{ display:inline-block; will-change:transform; }
+  .btn-ghost{ border-color:rgba(250,246,238,.3); }
+  .btn-ghost:hover{ border-color:var(--cream); box-shadow:0 0 20px rgba(250,246,238,.12); }
+  .ripple{ position:absolute; border-radius:50%; background:rgba(233,201,138,.5); transform:scale(0); pointer-events:none; }
+
+  /* ============ Product Showcase ============ */
+  .showcase{ position:relative; z-index:1; padding:9rem clamp(1.5rem,5vw,4rem) 7rem; }
+  .showcase-title{ font-family:var(--font-display); font-size:clamp(2.2rem,4.4vw,3.4rem); margin-bottom:3.4rem; max-width:14ch; }
+  .bento-grid{ display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:minmax(230px,auto) minmax(230px,auto); gap:1.4rem; }
+  .product-card{
+    position:relative; border-radius:20px; padding:2.1rem;
+    background:linear-gradient(160deg, rgba(250,246,238,.05), rgba(250,246,238,.015));
+    backdrop-filter:blur(18px) saturate(140%); -webkit-backdrop-filter:blur(18px) saturate(140%);
+    border:1px solid rgba(233,201,138,.14); box-shadow:0 20px 50px -25px rgba(0,0,0,.6);
+    transform-style:preserve-3d; will-change:transform;
+    display:flex; flex-direction:column; justify-content:flex-end; overflow:hidden;
+  }
+  .card-shine{ position:absolute; inset:0; opacity:0; background:radial-gradient(circle at 50% 30%, rgba(233,201,138,.35), transparent 60%); transition:opacity .4s ease; pointer-events:none; }
+  .card-featured{ grid-column:1 / 3; grid-row:1 / 3; }
+  .card-featured::before{ content:''; position:absolute; top:8%; left:50%; transform:translateX(-50%); width:70%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle, rgba(212,139,56,.35), transparent 70%); filter:blur(14px); pointer-events:none; }
+  .card-b{ grid-column:3 / 4; grid-row:1 / 2; }
+  .card-c{ grid-column:4 / 5; grid-row:1 / 2; }
+  .card-wide{ grid-column:3 / 5; grid-row:2 / 3; }
+  .product-card h3{ font-family:var(--font-display); font-size:1.5rem; margin-bottom:.6rem; position:relative; }
+  .product-card p{ color:var(--cream-dim); font-size:.94rem; line-height:1.55; max-width:34ch; font-weight:300; position:relative; }
+  .card-tag{ position:absolute; top:1.6rem; left:2.1rem; font-size:.78rem; color:var(--champagne); }
+  .card-weight{ margin-top:1.1rem; font-size:.8rem; color:var(--cream-faint); position:relative; }
+
+  /* ============ Closing ============ */
+  .closing{ position:relative; z-index:1; padding:7rem clamp(1.5rem,5vw,4rem) 4.5rem; display:flex; flex-direction:column; align-items:flex-start; gap:2.2rem; border-top:1px solid rgba(250,246,238,.08); }
+  .closing-line{ font-family:var(--font-display); font-style:italic; font-size:1.3rem; max-width:34ch; color:var(--cream-dim); }
+
+  /* ============ Responsive ============ */
+  @media (max-width:900px){
+    .hero{ grid-template-columns:1fr; padding-top:8rem; row-gap:3rem; }
+    .hero-visual{ height:42vh; }
+    .jaggery-block{ position:relative; right:auto; top:auto; transform:none; margin:0 auto; width:60vw; height:60vw; max-width:280px; max-height:280px; }
+    .showcase{ padding-top:6rem; }
+    .bento-grid{ grid-template-columns:1fr; grid-template-rows:none; }
+    .card-featured,.card-b,.card-c,.card-wide{ grid-column:auto; grid-row:auto; }
+    .card-featured::before{ display:none; }
+  }
+
+  /* ============ Accessibility ============ */
+  @media (hover:none), (pointer:coarse){
+    .cursor-dot,.cursor-ring{ display:none; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="scroll-rail" aria-hidden="true"><div class="scroll-rail-fill"></div></div>
+
+  <header class="nav">
+    <div class="nav-mark">Ariyan Organics</div>
+    <nav class="nav-links">
+      <a href="#collection">Collection</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-social">
+      <a href="https://instagram.com/icyscar23" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.6"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <!-- TODO: replace with your WhatsApp number, e.g. https://wa.me/92XXXXXXXXXX -->
+      <a href="https://wa.me/" target="_blank" rel="noopener" aria-label="WhatsApp" class="social-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 3.69-9 8.25 0 2.02.86 3.87 2.29 5.32L4 21l4.7-1.2c1 .34 2.1.53 3.3.53 4.97 0 9-3.69 9-8.25S16.97 3 12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <p class="hero-kicker">Single-origin cane from Charsadda, Khyber Pakhtunkhwa</p>
+      <h1 class="hero-headline">
+        <span class="line"><span class="line-inner">Heritage,</span></span>
+        <span class="line"><span class="line-inner">Turned to Gold.</span></span>
+      </h1>
+      <p class="hero-sub">Small-batch organic jaggery, hand-set the traditional way and vacuum-sealed for a modern table.</p>
+      <button class="btn-magnetic" id="heroCta"><span class="btn-label">Explore the Collection</span></button>
+    </div>
+    <div class="hero-visual">
+      <div class="jaggery-block" id="heroBlock">
+        <div class="block-face"></div>
+        <div class="block-shine"></div>
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true"><span></span></div>
+  </section>
+
+  <section class="showcase" id="collection">
+    <h2 class="showcase-title reveal-up">Set by Hand</h2>
+    <div class="bento-grid">
+      <article class="product-card card-featured tilt-card">
+        <div class="card-shine"></div>
+        <span class="card-tag">Flagship</span>
+        <h3>Charsadda Reserve</h3>
+        <p>Single-origin cane, small-batch pressed. Our flagship block.</p>
+        <span class="card-weight">500g</span>
+      </article>
+      <article class="product-card card-b tilt-card">
+        <div class="card-shine"></div>
+        <h3>Heritage Gur Block</h3>
+        <p>The everyday block, made the way it always has been.</p>
+        <span class="card-weight">250g</span>
+      </article>
+      <article class="product-card card-c tilt-card">
+        <div class="card-shine"></div>
+        <h3>Saunf &amp; Ajwain Spiced Block</h3>
+        <p>Fennel and carom folded in while the cane is still warm.</p>
+        <span class="card-weight">250g</span>
+      </article>
+      <article class="product-card card-wide tilt-card">
+        <div class="card-shine"></div>
+        <h3>Gifting Edition</h3>
+        <p>Boxed in cream and gold, ready to hand to someone you like.</p>
+        <span class="card-weight">4 × 150g</span>
+      </article>
+    </div>
+  </section>
+
+  <footer class="closing" id="contact">
+    <p class="closing-line reveal-up">Available across Islamabad and Lahore, and shipping internationally.</p>
+    <button class="btn-magnetic btn-ghost"><span class="btn-label">Get in Touch</span></button>
+  </footer>
+
+<script>
+(function(){
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* ---------- Ambient particle field ---------- */
+  (function particles(){
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let w,h,dots=[];
+    const COUNT = prefersReduced ? 0 : (innerWidth < 700 ? 40 : 85);
+
+    function resize(){ w = canvas.width = innerWidth; h = canvas.height = innerHeight; }
+    resize();
+    addEventListener('resize', resize);
+
+    function init(){
+      dots = Array.from({length:COUNT}, () => ({
+        x:Math.random()*w, y:Math.random()*h,
+        r:Math.random()*1.6+.4,
+        vy:Math.random()*.25+.06,
+        drift:Math.random()*.6-.3,
+        phase:Math.random()*Math.PI*2,
+        alpha:Math.random()*.45+.08
+      }));
+    }
+
+    function frame(t){
+      ctx.clearRect(0,0,w,h);
+      for(const p of dots){
+        p.y -= p.vy;
+        p.x += Math.sin(t*0.0006 + p.phase) * p.drift * .25;
+        if(p.y < -8){ p.y = h+8; p.x = Math.random()*w; }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(212,139,56,${p.alpha})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(frame);
+    }
+
+    if(COUNT > 0){ init(); requestAnimationFrame(frame); }
+  })();
+
+  /* ---------- Nav scrolled state ---------- */
+  const navEl = document.querySelector('.nav');
+  addEventListener('scroll', () => {
+    navEl.classList.toggle('is-scrolled', window.scrollY > 40);
+  }, {passive:true});
+
+  /* ---------- GSAP-powered interactions ---------- */
+  if(window.gsap && window.ScrollTrigger){
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* Scroll progress rail */
+    ScrollTrigger.create({
+      trigger: document.body, start:'top top', end:'bottom bottom',
+      onUpdate: self => { document.querySelector('.scroll-rail-fill').style.height = (self.progress*100) + '%'; }
+    });
+
+    /* Hero entrance — one orchestrated sequence */
+    const heroTl = gsap.timeline({ defaults:{ ease:'power4.out' }, delay:.15 });
+    heroTl
+      .from('.nav', { opacity:0, y:-14, duration:.8 })
+      .from('.hero-kicker', { opacity:0, y:16, duration:.9 }, '-=.5')
+      .from('.hero-headline .line-inner', { yPercent:115, opacity:0, duration:1.1, stagger:.12 }, '-=.55')
+      .from('.hero-sub', { opacity:0, y:16, duration:.9 }, '-=.6')
+      .from('.hero-text .btn-magnetic', { opacity:0, y:16, duration:.8 }, '-=.55')
+      .from('.jaggery-block', { opacity:0, scale:.86, duration:1.4, ease:'power3.out' }, '-=1.05')
+      .from('.scroll-cue', { opacity:0, duration:.8 }, '-=.5');
+
+    /* Scroll-triggered storytelling reveals */
+    gsap.utils.toArray('.reveal-up').forEach(el => {
+      gsap.from(el, { opacity:0, y:40, duration:1, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 82%' } });
+    });
+    gsap.from('.card-featured', {
+      opacity:0, scale:.92, duration:1.1, ease:'power3.out',
+      scrollTrigger:{ trigger:'.bento-grid', start:'top 78%' }
+    });
+    gsap.from('.product-card:not(.card-featured)', {
+      opacity:0, y:36, duration:.9, ease:'power3.out', stagger:.12,
+      scrollTrigger:{ trigger:'.bento-grid', start:'top 72%' }
+    });
+
+    if(isFinePointer && !prefersReduced){
+      document.body.classList.add('has-custom-cursor');
+
+      /* Magnetic cursor */
+      const dot = document.querySelector('.cursor-dot');
+      const ring = document.querySelector('.cursor-ring');
+      let mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my;
+
+      addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        gsap.set(dot, { x:mx, y:my });
+      });
+      gsap.ticker.add(() => {
+        rx += (mx-rx)*.16; ry += (my-ry)*.16;
+        gsap.set(ring, { x:rx, y:ry });
+      });
+      document.querySelectorAll('a, button, .tilt-card').forEach(el => {
+        el.addEventListener('mouseenter', () => gsap.to(ring, { scale:2.2, duration:.35, ease:'power2.out' }));
+        el.addEventListener('mouseleave', () => gsap.to(ring, { scale:1, duration:.35, ease:'power2.out' }));
+      });
+
+      /* Magnetic buttons + ripple */
+      document.querySelectorAll('.btn-magnetic').forEach(btn => {
+        const label = btn.querySelector('.btn-label');
+        btn.addEventListener('mousemove', e => {
+          const r = btn.getBoundingClientRect();
+          const x = e.clientX - r.left - r.width/2;
+          const y = e.clientY - r.top - r.height/2;
+          gsap.to(btn, { x:x*.35, y:y*.5, duration:.6, ease:'power3.out' });
+          gsap.to(label, { x:x*.18, y:y*.25, duration:.6, ease:'power3.out' });
+        });
+        btn.addEventListener('mouseleave', () => {
+          gsap.to(btn, { x:0, y:0, duration:.7, ease:'elastic.out(1,0.35)' });
+          gsap.to(label, { x:0, y:0, duration:.7, ease:'elastic.out(1,0.35)' });
+        });
+        btn.addEventListener('click', e => {
+          const r = btn.getBoundingClientRect();
+          const ripple = document.createElement('span');
+          ripple.className = 'ripple';
+          const size = Math.max(r.width, r.height) * 1.6;
+          ripple.style.width = ripple.style.height = size + 'px';
+          ripple.style.left = (e.clientX - r.left - size/2) + 'px';
+          ripple.style.top = (e.clientY - r.top - size/2) + 'px';
+          btn.appendChild(ripple);
+          gsap.to(ripple, { scale:1, opacity:0, duration:.7, ease:'power2.out', onComplete:() => ripple.remove() });
+        });
+      });
+
+      /* Hero block parallax tilt */
+      const heroBlock = document.getElementById('heroBlock');
+      const heroShine = heroBlock.querySelector('.block-shine');
+      document.querySelector('.hero').addEventListener('mousemove', e => {
+        const r = heroBlock.getBoundingClientRect();
+        const px = ((e.clientX - r.left) / r.width) * 100;
+        const py = ((e.clientY - r.top) / r.height) * 100;
+        heroShine.style.setProperty('--mx', px + '%');
+        heroShine.style.setProperty('--my', py + '%');
+        const rx2 = gsap.utils.clamp(-14, 14, ((e.clientY - r.top)/r.height - .5) * -16);
+        const ry2 = gsap.utils.clamp(-14, 14, ((e.clientX - r.left)/r.width - .5) * 16);
+        gsap.to(heroBlock, { rotateX:rx2, rotateY:ry2, transformPerspective:1000, duration:.6, ease:'power2.out' });
+      });
+
+      /* Product card tilt */
+      document.querySelectorAll('.tilt-card').forEach(card => {
+        const shine = card.querySelector('.card-shine');
+        card.addEventListener('mousemove', e => {
+          const r = card.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width;
+          const py = (e.clientY - r.top) / r.height;
+          gsap.to(card, { rotateX:(py-.5)*-10, rotateY:(px-.5)*10, transformPerspective:900, duration:.5, ease:'power2.out' });
+          if(shine) gsap.to(shine, { opacity:.7, x:(px-.5)*30, y:(py-.5)*30, duration:.4 });
+        });
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, { rotateX:0, rotateY:0, duration:.7, ease:'power3.out' });
+          if(shine) gsap.to(shine, { opacity:0, duration:.6 });
+        });
+      });
+    }
+  }
+})();
+</script>
+</body>
+</html>
